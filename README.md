@@ -11,7 +11,7 @@
 
 
 ## 1.代码结构
---
+------
 |-com.generator<br/>
 　　|-annotation　　　　　　数据库字段转换为模板参数注解包<br/>
 　　|-constant　 　 　 　　　常量包<br/>
@@ -23,7 +23,7 @@
 　　|-GeneratorApplication 　 springboot启动类<br/>
 
 ## 2.基础配置(yml)
---
+------
 　（1）数据库修改项：spring.datasource.url/username/password/driver-class-name<br/>
 　（2）自定义修改行：<br/>
 　　　　generator<br/>
@@ -36,18 +36,18 @@
 　　　　　　out-dir：代码生成后的输出路径<br/>
 
 ## 3.程序运
---
+------
 　GeneratorApplication-GeneratorComponent.run
 
 ## 4.模板配置/扩展
---
+------
 　（1）模板路径：resource/templates下<br/>
 　（2）遵守freemarker语法规范<br/>
 　（3）动态参数可使用值：${TableTemplate/ColumnTemplate.get方法}，可自行扩展<br/>
 　（4）新增数据类型的转换关系<br/>
 
 ## 5.扩展数据库类型
---
+------
 　（1）新增枚举<br/>
  　 　 　com.generator.enums.DBTypeEnum<br/>
 　（2）新增数据库对象<br/>
