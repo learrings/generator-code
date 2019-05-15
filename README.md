@@ -31,7 +31,7 @@
 　　　　　　base-package：${basePackage} 动态参数，一般用于package路径<br/>
 　　　　　　module：${module} 动态参数，一般用于package路径<br/>
 　　　　　　author：${author} 动态参数，一般用于作者注释<br/>
-　　　　　　out-dir：代码生成后的输出路径<br/>
+　　　　　　out-dir：代码生成后的输出路径，输出路径会<font color=red>先物理删除，切记!!!</font><br/>
 
 ## 程序运
 　GeneratorApplication-GeneratorComponent.run
