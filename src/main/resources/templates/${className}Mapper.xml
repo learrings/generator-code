@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<#--  定义变量区 -->
+<#assign classNameLower = className?uncap_first>
+<#assign prefix_key = '#'>
+	<!-- =========================================================== -->
+    <!-- 定义resultMap                                                                                                                                                                             -->
+    <!-- =========================================================== -->
+	<resultMap id="${classNameLower}Mapper" type="${basePackage}.${module}.model.${className}">
+<#list columnList as column>
+		<result property="${column.attrName}" column="${column.columnName}"/>
+</#list>
+	</resultMap>
+
+	<!-- mysql 分页 -->
+	<sql id="pagination_tail">
+		LIMIT ${prefix_key}{pager.page} , ${prefix_key}{pager.rows}
+	</sql>
+
+	<!-- mysql 查询总数 -->
+	<sql id="count_Tail">
+		SELECT COUNT(1) FROM
+	</sql>
+	
+	<sql id="selectAllColumns">
+		SELECT
+<#list columnList as column>
+			<#if column.index != 1>,</#if>${column.columnName}
+</#list>
+		FROM  ${tableName} record
+	</sql>
+	
+	<sql id="where_fragement">
+		WHERE 1=1
+		<if test="entity!=null">
+<#list columnList as column>
+	<#if column.javaType =='String'>
+			<if test="entity.${column.attrName} != null and entity.${column.attrName} !=''">
+		<#if column.attrLength gt 10 >
+				AND record.${column.columnName}  LIKE CONCAT('%',${prefix_key}{entity.${column.attrName}},'%')]]>
+		<#else>
+				AND record.${column.columnName} = ${prefix_key}{entity.${column.attrName}}
+		</#if>
+			</if>
+	<#elseif column.javaType =='Date'>
+			<if test="entity.${column.attrName}Begin != null'">
+				<![CDATA[ AND record.${column.columnName} >= ${prefix_key}{entity.${column.attrName}Begin}]]>
+			</if>
+			<if test="entity.${column.attrName}End != null'">
+				<![CDATA[ AND record.${column.columnName} < ${prefix_key}{entity.${column.attrName}End}]]>
+			</if>
+	<#else>
+			<if test="entity.${column.attrName} != null">
+				AND record.${column.columnName} = ${prefix_key}{entity.${column.attrName}}
+			</if>
+	</#if>
+</#list>
+		</if>
+	</sql>
+
+	<!-- =========================================================== -->
+    <!-- DAO方法中的基本增删改查方法                                                                                                                                                           -->
+    <!-- =========================================================== -->
+    <!-- 根据id查询 -->
+	<select id="queryById" resultMap="${classNameLower}Map" parameterType="long">
+		<include refid="selectAllColumns" />
+<#list columnList as column>
+	<#if column.indexType == 'PRI'>
+		WHERE record.${column.columnName} = ${prefix_key}{${column.attrName}}
+		<#break>
+	</#if>
+</#list>
+	</select>
+	
+	<!-- 分页查询 -->
+	<select id="queryList" resultMap="${classNameLower}Map" >
+		<include refid="selectAllColumns"/>
+		<include refid="where_fragement" />
+		<if test="pager != null">
+			<include refid="pagination_tail" />
+		</if>
+	</select>
+	
+	<select id="queryCount" resultType="long">
+		<include refid="count_Tail" />
+		${tableName} record
+		<include refid="where_fragement" />
+	</select>
+</mapper>

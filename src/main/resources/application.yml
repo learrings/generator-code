@@ -1,0 +1,26 @@
+logging:
+  level:
+    root: error
+server:
+  port: 9090
+
+spring:
+  application:
+    name: generator-code
+  jpa:
+    show-sql: false
+    open-in-view: false
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/mirco_auth?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+generator:
+  template-dir: templates
+  schema: mirco_auth
+  gen-tables:
+  base-package: com.generator
+  module: code
+  author: system
+  out-dir: d:\rapid-generator
