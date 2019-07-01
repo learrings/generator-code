@@ -1,6 +1,6 @@
 **代码生成器使用说明**       
 ==============                           
-　支持数据库扩展，模板参数扩展，目前只编写了`MYSQL`部分的实现
+　支持数据库扩展，模板参数扩展，目前只编写了`MYSQL、ORACL`部分的实现
 
 ## **目录**
 * [代码结构](#代码结构)
@@ -45,11 +45,7 @@
 ## 扩展数据库类型
 　（1）新增枚举<br/>
  　 　 　com.generator.enums.DBTypeEnum<br/>
-　（2）新增数据库对象<br/>
- 　 　 　com.generator.entity.columns/com.generator.entity.tables<br/>
-　　　　　　I.新增并继承 ColumnEntity/TableEntity<br/>
-　　　　　　II. 实现 super.setTableName(tableName)<br/>
-　（3）注解实现新增数据类型转换<br/>
- 　 　 　com.generator.entity.template.TableTemplate/ColumnTemplate <br/>
-　（4）新增数据类型的转换关系<br/>
+　（2）注解实现新增数据类型转换<br/>
+ 　 　 　com.generator.entity.TableTemplate/ColumnTemplate <br/>
+　（3）新增数据类型的转换关系<br/>
   　 　 　com.generator.enums.JavaTypeEnum<br/>
