@@ -2,8 +2,10 @@ package com.generator.core;
 
 
 import com.generator.constant.GeneratorConstant;
-import com.generator.entity.template.TableTemplate;
+import com.generator.entity.TableTemplate;
 import com.generator.enums.DBTypeEnum;
+import com.generator.properties.GeneratorProperties;
+import com.generator.util.TransformUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -26,6 +28,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Description:[核心生成器]</p>
@@ -34,15 +37,18 @@ import java.util.List;
  * @author learrings
  */
 @Component
-public class GeneratorComponent extends GeneratorTransform {
+public class GeneratorComponent {
 
 	@Resource
 	protected GeneratorRepository generatorRepository;
-
 	@Resource
 	private DataSourceProperties dataSourceProperties;
+	@Resource
+	protected GeneratorProperties generatorProperties;
 
 	private Configuration configuration;
+	private DBTypeEnum dbTypeEnum;
+	private List<TableTemplate> templateModelList;
 
 	@PostConstruct
 	public void run() {
@@ -85,7 +91,7 @@ public class GeneratorComponent extends GeneratorTransform {
 
 		dbTypeEnum = DBTypeEnum.getDBType(dataSourceProperties.getDriverClassName());
 		if (dbTypeEnum == null) {
-			throw new Exception("spring.driver-class-name 无法识别，请在com.generator.core.GeneratorTransform.DBTypeEnum中扩展");
+			throw new Exception("spring.driver-class-name 无法识别，请在(com.generator.enums.DBTypeEnum)中扩展");
 		}
 	}
 
@@ -106,16 +112,18 @@ public class GeneratorComponent extends GeneratorTransform {
 		if (!dir.mkdir()) {
 			throw new Exception("重新创建模板目录异常|1.请关闭生成目录文件 2.目录是否可创建|");
 		}
+
 	}
 
 	private void getData() throws Exception {
 		System.out.println("===>代码生成器运行中：No.3 获取表、列信息中...");
-		List tableList = generatorRepository.findTableList(dbTypeEnum);
-		List columnList = generatorRepository.findColumnList(dbTypeEnum);
+		List<Map<String, Object>> tableList = generatorRepository.findList(dbTypeEnum, true);
+		List<Map<String, Object>> columnList = generatorRepository.findList(dbTypeEnum, false);
 		if (CollectionUtils.isEmpty(tableList) || CollectionUtils.isEmpty(columnList)) {
 			throw new Exception("未查询到需要代码生成的表结构");
 		}
-		super.getTemplateParam(tableList, columnList);
+
+		templateModelList = TransformUtils.getTemplateParam(tableList, columnList, generatorProperties, dbTypeEnum);
 	}
 
 	private void renderTemplates() throws Exception {

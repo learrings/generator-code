@@ -1,8 +1,6 @@
 package com.generator.enums;
 
 import com.generator.constant.GeneratorConstant;
-import com.generator.entity.columns.ColumnMysqlEntity;
-import com.generator.entity.tables.TableMysqlEntity;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -22,23 +20,23 @@ public enum JavaTypeEnum {
 	/**
 	 *
 	 */
-	Long("bigint,mediumint", ""),
+	Long("bigint,mediumint", "NUMBER(Long)"),
 	/**
 	 *
 	 */
-	String("binary,char,json,linestring,longtext,mediumtext,multilinestring,text,tinytext,varchar", ""),
+	String("binary,char,json,linestring,longtext,mediumtext,multilinestring,text,tinytext,varchar", "CHAR,VARCHAR2,LONG,BLOB,CLOB"),
 	/**
 	 *
 	 */
-	Integer("int,integer,multipoint,smallint,tinyint,year", ""),
+	Integer("int,integer,multipoint,smallint,tinyint,year", "NUMBER(Integer)"),
 	/**
 	 *
 	 */
-	Date("date,datetime,time,timestamp", ""),
+	Date("date,datetime,time,timestamp", "DATE,TIMESTAMP(6)"),
 	/**
 	 *
 	 */
-	Double("double,numeric", ""),
+	Double("double,numeric", "NUMBER(Double)"),
 	/**
 	 *
 	 */
@@ -50,7 +48,7 @@ public enum JavaTypeEnum {
 	/**
 	 *
 	 */
-	Other("enum,geometry,geometrycollection,multipolygon,point,polygon,real,set", ""),
+	Other("", ""),
 	;
 
 	String mysqlType;
@@ -61,7 +59,8 @@ public enum JavaTypeEnum {
 		this.oracleType = oracleType;
 	}
 
-	public static JavaTypeEnum getJavaType(DBTypeEnum dbTypeEnum, String columnType) {
+	public static JavaTypeEnum getJavaType(DBTypeEnum dbTypeEnum, String columnType, Integer dataPrecision, Integer dataScale) {
+		columnType = createColumnType(dbTypeEnum, columnType, dataPrecision, dataScale);
 		for (JavaTypeEnum javaType : values()) {
 			switch (dbTypeEnum) {
 				case MYSQL:
@@ -76,6 +75,19 @@ public enum JavaTypeEnum {
 			}
 
 		}
-		return null;
+		return JavaTypeEnum.Other;
+	}
+
+	private static String createColumnType(DBTypeEnum dbTypeEnum, String columnType, Integer dataPrecision, Integer dataScale) {
+		if (dbTypeEnum == DBTypeEnum.ORACLE && "NUMBER".equals(columnType)) {
+			if (dataScale != null && dataScale > 0) {
+				return "NUMBER(Double)";
+			}
+			if (dataPrecision > 11) {
+				return "NUMBER(Long)";
+			}
+			return "NUMBER(Integer)";
+		}
+		return columnType;
 	}
 }

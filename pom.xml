@@ -25,6 +25,7 @@
         <freemarker.version>2.3.28</freemarker.version>
         <commons-io.version>2.6</commons-io.version>
         <guava.version>27.1-jre</guava.version>
+        <oracle.version>11.2.0.3</oracle.version>
     </properties>
 
     <dependencies>
@@ -44,15 +45,21 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
-        <!--jpa-->
+        <!--jdbc-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
         <!--mysql-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <!-- oracle 11g -->
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>${oracle.version}</version>
         </dependency>
         <!--lombok 对象类get/set注解-->
         <dependency>
@@ -77,6 +84,10 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
 

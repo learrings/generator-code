@@ -1,7 +1,5 @@
 package com.generator.enums;
 
-import com.generator.entity.columns.ColumnMysqlEntity;
-import com.generator.entity.tables.TableMysqlEntity;
 import lombok.Getter;
 
 /**
@@ -16,24 +14,23 @@ public enum DBTypeEnum {
 	 * MySql数据库
 	 */
 	MYSQL("com.mysql.cj.jdbc.Driver"
-			, "SELECT TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_ROWS,TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES"
-			, "SELECT TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,ORDINAL_POSITION,COLUMN_DEFAULT,IS_NULLABLE,DATA_TYPE" +
-			",CHARACTER_MAXIMUM_LENGTH,NUMERIC_PRECISION,NUMERIC_SCALE,CHARACTER_SET_NAME,COLLATION_NAME,COLUMN_TYPE,COLUMN_KEY" +
-			",EXTRA,PRIVILEGES,COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS"
+			, "SELECT TABLE_SCHEMA,TABLE_NAME,TABLE_TYPE,TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES"
+			, "SELECT TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,ORDINAL_POSITION,DATA_TYPE,COLUMN_KEY,COLUMN_COMMENT" +
+			",CHARACTER_MAXIMUM_LENGTH,IS_NULLABLE,COLUMN_DEFAULT FROM INFORMATION_SCHEMA.COLUMNS"
 			, "TABLE_SCHEMA"
-			, "TABLE_NAME"
-			, TableMysqlEntity.class
-			, ColumnMysqlEntity.class),
+			, "TABLE_NAME"),
 	/**
 	 * Oracle数据库
 	 */
-	ORACLE("oracle.jdbc.driver.OracleDriver"
-			, ""
-			, ""
-			, ""
-			, ""
-			, null
-			, null),
+	ORACLE("oracle.jdbc.OracleDriver"
+			, "SELECT A.OWNER,A.TABLE_NAME,A.TABLE_TYPE,A.COMMENTS FROM ALL_TAB_COMMENTS A"
+			, "SELECT A.OWNER,A.TABLE_NAME,A.COLUMN_NAME,A.COLUMN_ID,A.DATA_TYPE,DECODE(C.POSITION,'1','PRI') AS COLUMN_KEY" +
+			",B.COMMENTS,A.DATA_PRECISION, A.DATA_LENGTH-A.CHAR_LENGTH AS DATA_LENGTH,A.DATA_SCALE,A.NULLABLE" +
+			",A.DATA_DEFAULT FROM ALL_TAB_COLUMNS A INNER JOIN ALL_COL_COMMENTS B ON A.TABLE_NAME=B.TABLE_NAME AND A.COLUMN_NAME=B.COLUMN_NAME" +
+			" LEFT JOIN ALL_CONSTRAINTS D ON D.TABLE_NAME=A.TABLE_NAME  AND D.CONSTRAINT_TYPE='P' LEFT JOIN ALL_CONS_COLUMNS C ON C.CONSTRAINT_NAME=D.CONSTRAINT_NAME" +
+			" AND C.COLUMN_NAME=A.COLUMN_NAME"
+			, "A.OWNER"
+			, "A.TABLE_NAME"),
 	/**
 	 * 其他数据库
 	 */
@@ -41,9 +38,7 @@ public enum DBTypeEnum {
 			, ""
 			, ""
 			, ""
-			, ""
-			, null
-			, null);
+			, "");
 
 	String driverClassName;
 	String tableInfoSql;
@@ -54,14 +49,12 @@ public enum DBTypeEnum {
 	Class columnClass;
 
 	DBTypeEnum(String driverClassName, String tableInfoSql, final String tableColumnSql,
-			   final String schemaName, final String tableName, Class tableClass, Class columnClass) {
+			   final String schemaName, final String tableName) {
 		this.driverClassName = driverClassName;
 		this.tableInfoSql = tableInfoSql;
 		this.tableColumnSql = tableColumnSql;
 		this.schemaName = schemaName;
 		this.tableName = tableName;
-		this.tableClass = tableClass;
-		this.columnClass = columnClass;
 	}
 
 	public static DBTypeEnum getDBType(String driverClassName) {

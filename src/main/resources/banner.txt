@@ -5,12 +5,9 @@ ${AnsiColor.BRIGHT_MAGENTA}
 // 1.新增数据库类型方案
 //  （1）com.generator.enums.DBTypeEnum
 //             I. 新增枚举
-//  （2）com.generator.entity.columns/com.generator.entity.tables
-//             I. 新增并继承 ColumnEntity/TableEntity
-//             II. 实现 super.setTableName(tableName)
-//  （3）com.generator.entity.template
-//             I. TableTemplate/ColumnTemplate 注解实现新增数据类型
-//  （4）com.generator.enums.JavaTypeEnum
+//  （2）com.generator.entity.TableTemplate/ColumnTemplate
+//             I.  注解实现新增数据类型
+//  （3）com.generator.enums.JavaTypeEnum
 //             I. 实现新增数据类型的转换关系
 // 2.模板文件
 //  （1）路径：resource/templates下

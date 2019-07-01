@@ -1,20 +1,20 @@
 logging:
-  level:
-    root: error
+  config: classpath:logback-spring.xml
 server:
   port: 9090
 
 spring:
   application:
     name: generator-code
-  jpa:
-    show-sql: false
-    open-in-view: false
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/mirco_auth?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:oracle:thin:@192.168.1.184:1521:orcl
+#    username: system
+#    password: oracle
+#    driver-class-name: oracle.jdbc.OracleDriver
 
 generator:
   template-dir: templates
